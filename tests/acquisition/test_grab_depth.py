@@ -5,13 +5,15 @@ import numpy.testing as npt
 
 import swagscanner.acquisition.grab_depth as gd
 
+
 class GrabDepthTests(unittest.TestCase):
+    def setUp(self):
+        self.depth_map = depth = gd.grab_depth()
 
     def test_grab_depth(self):
-        depth = gd.grab_depth()
-        depth = depth.flatten()
-        self.assertEqual(len(depth), 307200)
-        
-        
+        self.assertEqual(len(self.depth_map.flatten()), 307200)
+
+
+
 if __name__ == '__main__':
     unittest.main()
