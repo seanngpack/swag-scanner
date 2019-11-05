@@ -3,7 +3,6 @@ import freenect
 import numpy as np
 import open3d
 import pcl
-import pcl.pcl_visualization
 
 depth_to_meters_table = {
     num: (1.0 / (num * -0.0030711016 + 3.3309495161)) for num in range(2048)
