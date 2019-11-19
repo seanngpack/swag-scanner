@@ -1,3 +1,7 @@
+'''Visualization tools
+
+'''
+
 import pcl
 import pcl.pcl_visualization
 import time
