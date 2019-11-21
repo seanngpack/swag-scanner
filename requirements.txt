@@ -1,2 +1,4 @@
-pcl
 numpy
+cython
+python-pcl
+opencv-python

@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/Users/seanngpack/.virtualenvs/cv/bin/python"
+    "python.pythonPath": "venv/bin/python",
+       
 }
