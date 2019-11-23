@@ -103,12 +103,12 @@ class Camera():
         fy_d = 1.0 / depth_intrin.fy
         cy_d = depth_intrin.ppy
 
-        depth_array = np.empty((307200, 3))
+        depth_array = np.empty((921600, 3))
         x_array = np.tile(np.arange(1280), 720)
         y_array = np.repeat(np.arange(720), 1280)
 
         # perform calculations to convert to real world coordinates
-        depth_array = depth_image * self.depth_scale
+        depth_array = depth_image # TODO: double check this
         x_array = (x_array - cx_d) * depth_array * fx_d
         y_array = (y_array - cy_d) * depth_array * fy_d
 

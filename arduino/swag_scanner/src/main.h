@@ -1,3 +1,3 @@
-void updateBatteryLevel();
-void rotateClockwise();
-void rotateCClockwise();
+void rotateTable(int degs);
+long degToSteps(int degs);
+long getTablePosition();
