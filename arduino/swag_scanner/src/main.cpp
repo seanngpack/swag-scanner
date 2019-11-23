@@ -26,6 +26,10 @@ BLEByteCharacteristic rotateTableCharacteristic("5ffba521-2363-41da-92f5-46adc56
 // BLERead | BLENotify remote clients will be able to get notifications if this characteristic changes
 BLEByteCharacteristic tablePositionCharacteristic("5ffba523-2363-41da-92f5-46adc56b2d37", BLERead | BLENotify);
 
+// BLE Scanner characterisic - custom 128-bit UUID, read and writable by central
+// BLERead | BLENotify remote clients will be able to get notifications if this characteristic changes
+BLEByteCharacteristic isTableRotatingCharacteristic("5ffba524-2363-41da-92f5-46adc56b2d37", BLERead | BLENotify);
+
 const int ledPin = LED_BUILTIN; // use built-in LED
 const int motorInterfaceType = 1;
 const int dirPin = 2;
@@ -69,6 +73,7 @@ void setup()
   // add characteristics to the service
   scannerService.addCharacteristic(rotateTableCharacteristic);
   scannerService.addCharacteristic(tablePositionCharacteristic);
+  scannerService.addCharacteristic(isTableRotatingCharacteristic);
 
   // add service
   BLE.addService(scannerService);
@@ -123,7 +128,7 @@ void loop()
 // 1 = in progress, 0 = done
 void rotateTable(int degs)
 {
-  // rotateTableCharacteristic.setValue(1);
+  isTableRotatingCharacteristic.setValue(1);
   // calculate the # of steps to rotate
   long steps = degToSteps(degs);
   long nextStepperPosition = stepper.currentPosition() + steps;
@@ -146,7 +151,8 @@ void rotateTable(int degs)
     // Serial.println(stepper.currentPosition());
     stepper.runSpeed();
   }
-  // rotateTableCharacteristic.setValue(0);
+
+  isTableRotatingCharacteristic.setValue(0);
   Serial.print((String)"finished rotating the stepper... " + stepper.currentPosition());
 
   Serial.println((String)"table position after: " + getTablePosition());
