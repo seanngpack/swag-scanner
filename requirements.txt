@@ -2,3 +2,7 @@ numpy
 cython
 python-pcl
 opencv-python
+pyobjc
+lightblue
+gattlib
+pybluez

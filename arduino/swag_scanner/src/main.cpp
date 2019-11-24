@@ -20,7 +20,7 @@ BLEService scannerService("5ffba521-2363-41da-92f5-46adc56b2d37");
 
 // BLE Scanner characterisic - custom 128-bit UUID, read and writable by central
 // BLERead | BLEWrite remote clients will be able to read & write
-BLEByteCharacteristic rotateTableCharacteristic("5ffba521-2363-41da-92f5-46adc56b2d37", BLERead | BLEWrite);
+BLEByteCharacteristic rotateTableCharacteristic("5ffba522-2363-41da-92f5-46adc56b2d37", BLERead | BLEWrite);
 
 // BLE Scanner characterisic - custom 128-bit UUID, read and writable by central
 // BLERead | BLENotify remote clients will be able to get notifications if this characteristic changes
