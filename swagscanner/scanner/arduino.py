@@ -1,4 +1,5 @@
 import logging
+import threading
 import time
 import uuid
 
@@ -10,7 +11,7 @@ TABLE_POSITION_CHAR_UUID = uuid.UUID('5ffba523-2363-41da-92f5-46adc56b2d37')
 IS_TABLE_ROTATING_CHAR_UUID = uuid.UUID('5ffba524-2363-41da-92f5-46adc56b2d37')
 
 
-class Arduino():
+class Arduino(threading.Thread):
     '''Arduino object
 
     '''
@@ -20,6 +21,7 @@ class Arduino():
                  rotate_table_char_uuid=ROTATE_TABLE_CHAR_UUID,
                  table_position_char_uuid=TABLE_POSITION_CHAR_UUID,
                  is_table_rotating_char_uuid=IS_TABLE_ROTATING_CHAR_UUID):
+        super(Arduino, self).__init__()
         self.is_active = is_active
         self.__uart_service_uuid = uart_service_uuid
         self.__rotate_table_char = None
@@ -36,18 +38,24 @@ class Arduino():
         # Get the BLE provider for the current platform.
         self.ble = Adafruit_BluefruitLE.get_provider()
         self.ble.initialize()
+        print('initalized arduino')
         # Start the mainloop to process BLE events, and run the provided function in a background thread.
-        self.ble.run_mainloop_with(self.run_connection)
+        # self.ble.run_mainloop_with(self.run)
 
-    def run_connection(self):
+    def run(self):
         '''Runs in background thread, will establish connection with the Arduino,
         find the service, find the characteristics and give the class instance a
         rotate_table_char
 
         '''
 
+        print(self.ble)
+        print(dir(self.ble))
+
         self.ble.clear_cached_data()
         adapter = self.ble.get_default_adapter()
+        
+
         adapter.power_on()
         print(f'Using adapter: {adapter.name}')
 
@@ -81,6 +89,8 @@ class Arduino():
 
         # set the instance characteristic for rotate table
         self.__rotate_table_char = rotate_table
+        print(self.__rotate_table_char)
+        print('this is to prove it exists lol')
 
         def received_position(data):
             print(f'Received: {data}')
@@ -114,7 +124,7 @@ class Arduino():
         '''
 
         print(f'sending rotation of {degs} degrees')
-        self.rotate_table.write_value((degs).to_bytes(1, byteorder='big'))
+        self.__rotate_table_char.write_value((degs).to_bytes(1, byteorder='big'))
         return degs
 
     def disconnect_device(self):
@@ -124,14 +134,24 @@ class Arduino():
 
         self.device.disconnect()
 
+    def printhi(self):
+        print('hello')
+
 
 def main():
     arduino = Arduino()
-    arduino.rotate_table(30)
-    time.sleep(10)
-    arduino.rotate_table(30)
-    arduino.disconnect_device()
+    arduino.daemon = True
+    arduino.setName('Arduino Thread')
+    arduino.start()
+    arduino.printhi()
 
+    time.sleep(10)
+    while True:
+        user_input = input("Enter degrees:")
+        arduino.rotate_table.write_value((int(user_input)).to_bytes(1, byteorder='big'))
+        if user_input == "q":
+            arduino.disconnect_device()
+            break
 
 
 if __name__ == "__main__":

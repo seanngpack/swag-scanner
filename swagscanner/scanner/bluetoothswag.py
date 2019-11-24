@@ -1,4 +1,5 @@
 import logging
+import threading
 import time
 import uuid
 
@@ -20,6 +21,10 @@ ble = Adafruit_BluefruitLE.get_provider()
 # Initialize the BLE system.  MUST be called before other BLE calls!
 ble.initialize()
 
+rotate_table = None
+table_position = None
+is_table_rotating = None
+device = None
 
 # Main function implements the program logic so it can run in a background
 # thread.  Most platforms require the main thread to handle GUI events and other
@@ -28,6 +33,11 @@ ble.initialize()
 # the BLE provider.
 def main():
     
+    global rotate_table
+    global table_position
+    global is_table_rotating
+    global device
+
     ble.clear_cached_data()
     adapter = ble.get_default_adapter()
     adapter.power_on()
@@ -54,39 +64,53 @@ def main():
     print('Connected: ' + str(device.is_connected))
     print('Advertised services: ' + str(device.advertised))
 
-    try:
-        print('Discovering services...')
-        device.discover([UART_SERVICE_UUID], [ROTATE_TABLE_CHAR, TABLE_POSITION_CHAR, IS_TABLE_ROTATING_CHAR])
+    
+    print('Discovering services...')
+    device.discover([UART_SERVICE_UUID], [ROTATE_TABLE_CHAR, TABLE_POSITION_CHAR, IS_TABLE_ROTATING_CHAR])
+    
+    uart = device.find_service(UART_SERVICE_UUID)
+    rotate_table = uart.find_characteristic(ROTATE_TABLE_CHAR)
+    table_position = uart.find_characteristic(TABLE_POSITION_CHAR)
+    is_table_rotating = uart.find_characteristic(IS_TABLE_ROTATING_CHAR)
+
+    # rotate_table.write_value((3).to_bytes(1, byteorder='big'))
+
+    def received(data):
+        print(f'Received: {data}')
+
+    # Turn on notification of RX characteristics using the callback above.
+    print('Subscribing to is_table_rotating characteristic changes...')
+    is_table_rotating.start_notify(received)
+    table_position.start_notify(received)
+    time.sleep(1)
+    # print(table_position.read_value())
+    # rotate_table.write_value((3).to_bytes(1, byteorder='big'))
+    time.sleep(4)
+    # rotate_table.write_value((3).to_bytes(1, byteorder='big'))
         
-        uart = device.find_service(UART_SERVICE_UUID)
-        rotate_table = uart.find_characteristic(ROTATE_TABLE_CHAR)
-        table_position = uart.find_characteristic(TABLE_POSITION_CHAR)
-        is_table_rotating = uart.find_characteristic(IS_TABLE_ROTATING_CHAR)
-
-        rotate_table.write_value((3).to_bytes(1, byteorder='big'))
-
-        def received(data):
-            print(f'Received: {data}')
-
-        # Turn on notification of RX characteristics using the callback above.
-        print('Subscribing to is_table_rotating characteristic changes...')
-        is_table_rotating.start_notify(received)
-        table_position.start_notify(received)
-        time.sleep(1)
-        print(table_position.read_value())
-        rotate_table.write_value((3).to_bytes(1, byteorder='big'))
-        time.sleep(4)
-        rotate_table.write_value((3).to_bytes(1, byteorder='big'))
         
-        time.sleep(60)
+def stop_thing():
 
-    finally:
-        # Make sure device is disconnected on exit.
-        device.disconnect()
+    print('disconnecting...')
+    device.disconnect()
 
 
 
 # Start the mainloop to process BLE events, and run the provided function in
 # a background thread.  When the provided main function stops running, returns
 # an integer status code, or throws an error the program will exit.
-ble.run_mainloop_with(main)
+
+swag = threading.Thread(target=main)
+swag.start()
+print('not locked, keep going')
+time.sleep(10)
+
+while True:
+    user_input = input("Enter degrees:")
+    rotate_table.write_value((int(user_input)).to_bytes(1, byteorder='big'))
+    if user_input == "q":
+        stop_thing()
+        break
+
+
+# ble.run_mainloop_with(main)
