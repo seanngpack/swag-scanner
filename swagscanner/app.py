@@ -1,18 +1,20 @@
-#!/usr/bin/env python
+'''Entry point into the application
+
+'''
+
 import cv2
-import freenect
 import numpy as np
 import pcl
 
-from swagscanner.acquisition.grab_depth import grab_depth
-import swagscanner.processing.depth_processing as dp
-import swagscanner.visualization.visualization_tools as vt
-
 
 def main():
-    depth_map = grab_depth()
-    point_cloud = dp.create_pointcloudxyz_vectorized(depth_map)
-    vt.visualize(point_cloud)
+    # TODO: instantiate arduino
+    # TODO: grab depth
+    # TODO: convert to pointcloud
+    # TODO: keep rotating arduino
+    # TODO: keep grabbing depth
+    # TODO: continue converting to pointcloud
+    # TODO: stitch them together
 
 
 if __name__ == "__main__":
