@@ -5,9 +5,9 @@ import uuid
 
 import Adafruit_BluefruitLE
 
-UART_SERVICE_UUID = uuid.UUID('5ffba521-2363-41da-92f5-46adc56b2d37')
-ROTATE_TABLE_CHAR_UUID = uuid.UUID('5ffba522-2363-41da-92f5-46adc56b2d37')
-TABLE_POSITION_CHAR_UUID = uuid.UUID('5ffba523-2363-41da-92f5-46adc56b2d37')
+UART_SERVICE_UUID           = uuid.UUID('5ffba521-2363-41da-92f5-46adc56b2d37')
+ROTATE_TABLE_CHAR_UUID      = uuid.UUID('5ffba522-2363-41da-92f5-46adc56b2d37')
+TABLE_POSITION_CHAR_UUID    = uuid.UUID('5ffba523-2363-41da-92f5-46adc56b2d37')
 IS_TABLE_ROTATING_CHAR_UUID = uuid.UUID('5ffba524-2363-41da-92f5-46adc56b2d37')
 
 
@@ -93,18 +93,22 @@ class Arduino(threading.Thread):
         print('this is to prove it exists lol')
 
         def received_position(data):
+            data = int.from_bytes(data, byteorder='big')
             print(f'Received: {data}')
             self.table_position = data
 
         def received_rotating(data):
-            print(f'Received: {data}')
+            data = int.from_bytes(data, byteorder='big')
+            print(f'Received rotating data: {data}')
+            
             if data == 0:
                 self.is_rotating = False
-            if data == 1:
+            elif data == 1:
                 self.is_rotating = True
             else:
+                print(type(data))
                 print(
-                    'is_table_rotating characteristic returning non binary output wtf?')
+                    f'is_table_rotating characteristic returning non binary output wtf? {data}')
 
         # Turn on notifications from the notifying characteristics
         print('Subscribing to table_position notifications...')
@@ -148,7 +152,7 @@ def main():
     time.sleep(10)
     while True:
         user_input = input("Enter degrees:")
-        arduino.rotate_table.write_value((int(user_input)).to_bytes(1, byteorder='big'))
+        arduino.rotate_table(int(user_input))
         if user_input == "q":
             arduino.disconnect_device()
             break
