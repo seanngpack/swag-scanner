@@ -38,7 +38,7 @@ const int sleepPin = 4;
 const int gearRatio = 60;
 const int stepsPerRev = 200;
 const float degPerStep = 360.0/float(stepsPerRev * gearRatio);
-const int motorSpeed = 100;
+const int motorSpeed = 350;
 
 // create new instance of stepper motor
 AccelStepper stepper = AccelStepper(motorInterfaceType, stepPin, dirPin);
@@ -56,7 +56,8 @@ void setup()
   pinMode(sleepPin, OUTPUT);
   
   // set initial values for the stepper
-  stepper.setMaxSpeed(500);
+  stepper.setMaxSpeed(500.0);
+  // stepper.setAcceleration(100.0)
   stepper.setCurrentPosition(0);
 
   // begin BLE initialization
