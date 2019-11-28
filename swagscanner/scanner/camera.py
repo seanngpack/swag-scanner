@@ -19,9 +19,6 @@ class Camera():
         # Start streaming
         self.pipeline.start(config)
 
-        # TODO:
-        # Try out different depth grabbing approach
-        # https://github.com/IntelRealSense/librealsense/issues/1231#issuecomment-368421888
         # Get stream profile and camera intrinsics
         profile = self.pipeline.get_active_profile()
         depth_profile = rs.video_stream_profile(

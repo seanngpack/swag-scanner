@@ -25,9 +25,9 @@ def get_pointcloud(depth_frame, depth_intrinsics, depth_scale):
 
     point_cloud_xyz = pcl.PointCloud()
     point_cloud_xyz.from_array(pointcloud_array)
-
+    
     # let's look at our new pointcloud
-    viewer.visualize#(point_cloud_xyz)
+    # viewer.visualize(point_cloud_xyz)
 
 
     return point_cloud_xyz

@@ -5,9 +5,29 @@
 import cv2
 import numpy as np
 import pcl
-import swagscanner.processing.depth as depth
+import swagscanner.processing.depth as process_depth
 from swagscanner.scanner.arduino import Arduino
 from swagscanner.scanner.camera import Camera
+
+
+class SwagScanner():
+    '''Scanner system
+
+    '''
+
+    def __init__(self):
+        self.arduino = Arduino()
+        self.camera = Camera()
+
+    def get_pointcloud(self):
+        '''Fetch a pointcloud
+
+        '''
+
+        pointcloud = process_depth.get_pointcloud(self.camera.get_depth_frame(),
+                                                  self.camera.depth_intrinsics,
+                                                  self.camera.depth_scale)
+        return pointcloud
 
 
 def main():
@@ -19,11 +39,8 @@ def main():
     # TODO: continue converting to pointcloud
     # TODO: stitch them together
 
-    d435 = Camera()
-    depth_intrinsics = d435.depth_intrinsics
-    depth_scale = d435.depth_scale
-    depth_frame = d435.get_depth_frame()
-    depth.get_pointcloud(depth_frame, depth_intrinsics, depth_scale)
+    scanner = SwagScanner()
+    scanner.get_pointcloud()
 
 
 if __name__ == "__main__":
