@@ -17,8 +17,8 @@ class SwagScanner():
     '''
 
     def __init__(self):
-        self.arduino = Arduino()
-        self.camera = Camera()
+        # self.arduino = Arduino()
+        self.camera = D435()
 
     def get_pointcloud(self):
         '''Fetch a pointcloud
@@ -28,6 +28,7 @@ class SwagScanner():
         pointcloud = process_depth.get_pointcloud(self.camera.get_depth_frame(),
                                                   self.camera.depth_intrinsics,
                                                   self.camera.depth_scale)
+        # pointcloud = process_depth.get_pointcloud_2(self.camera.get_depth_frame())
         return pointcloud
 
 
