@@ -5,9 +5,11 @@
 import cv2
 import numpy as np
 import pcl
-import swagscanner.processing.depth as process_depth
+import swagscanner.visualization.viewer as viewer
+from swagscanner.processing.depth import DepthProcessor
 from swagscanner.scanner.arduino import Arduino
-from swagscanner.scanner.camera import Camera
+from swagscanner.scanner.d435 import D435
+from swagscanner.scanner.kinect import Kinect
 import threading
 
 
@@ -16,19 +18,18 @@ class SwagScanner():
 
     '''
 
-    def __init__(self):
+    def __init__(self, camera=D435()):
         # self.arduino = Arduino()
-        self.camera = D435()
+        self.camera = camera
+        self.depth_processor = DepthProcessor().initialize_processor(
+            camera=self.camera, fast=True)
 
     def get_pointcloud(self):
         '''Fetch a pointcloud
 
         '''
 
-        pointcloud = process_depth.get_pointcloud(self.camera.get_depth_frame(),
-                                                  self.camera.depth_intrinsics,
-                                                  self.camera.depth_scale)
-        # pointcloud = process_depth.get_pointcloud_2(self.camera.get_depth_frame())
+        pointcloud = self.depth_processor.get_pointcloud()
         return pointcloud
 
 
@@ -42,7 +43,8 @@ def main():
     # TODO: stitch them together
 
     scanner = SwagScanner()
-    scanner.get_pointcloud()
+    point_cloud = scanner.get_pointcloud()
+    viewer.visualize(point_cloud)
 
 
 if __name__ == "__main__":

@@ -6,15 +6,22 @@ import pcl
 import pcl.pcl_visualization
 import time
 
-def visualize(point_cloud_xyz):
+
+def visualize(point_cloud):
     '''Visualize a pointcloud 
 
+    Args:
+        point_cloud(PointCloudXYZ): the pointcloud you want to visualize
+
     '''
-    
-    viewer = pcl.pcl_visualization.PCLVisualizering('hello')
+
+    # Alternative:
+    # viewer.visualize(point_cloud)
+
+    viewer = pcl.pcl_visualization.PCLVisualizering('cloud visualizer yo')
     pccolor = pcl.pcl_visualization.PointCloudColorHandleringCustom(
-        point_cloud_xyz, 255, 255, 255)
-    viewer.AddPointCloud_ColorHandler(point_cloud_xyz, pccolor)
+        point_cloud, 255, 255, 255)
+    viewer.AddPointCloud_ColorHandler(point_cloud, pccolor)
 
     v = True
     while v:
