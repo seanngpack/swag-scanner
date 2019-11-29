@@ -1,9 +1,7 @@
+import Adafruit_BluefruitLE
 import logging
-import threading
 import time
 import uuid
-
-import Adafruit_BluefruitLE
 
 UART_SERVICE_UUID = uuid.UUID('5ffba521-2363-41da-92f5-46adc56b2d37')
 ROTATE_TABLE_CHAR_UUID = uuid.UUID('5ffba522-2363-41da-92f5-46adc56b2d37')
@@ -11,7 +9,7 @@ TABLE_POSITION_CHAR_UUID = uuid.UUID('5ffba523-2363-41da-92f5-46adc56b2d37')
 IS_TABLE_ROTATING_CHAR_UUID = uuid.UUID('5ffba524-2363-41da-92f5-46adc56b2d37')
 
 
-class Arduino(threading.Thread):
+class Arduino():
     '''Arduino object
 
     '''
@@ -39,14 +37,6 @@ class Arduino(threading.Thread):
         self._table_position = 0
 
         self._initialize_ble()
-
-    def run(self):
-        '''Runs in background thread, will establish connection with the Arduino,
-        find the service, find the characteristics and give the class instance a
-        rotate_table_char
-
-        '''
-
         self._initialize_device()
 
     def _initialize_ble(self):
@@ -178,9 +168,6 @@ class Arduino(threading.Thread):
 
 def main():
     arduino = Arduino()
-    arduino.daemon = True
-    arduino.setName('Arduino Thread')
-    arduino.start()
 
     while True:
         user_input = input("Enter degrees: ")

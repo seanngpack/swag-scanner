@@ -9,9 +9,7 @@ class Camera():
 
     '''
 
-    def __init__(self, rotation_matrix=None):
-        self.rotation_matrix = rotation_matrix
-
+    def __init__(self):
         self.pipeline = rs.pipeline()
         config = rs.config()
         config.enable_stream(rs.stream.depth, 1280, 720, rs.format.z16, 30)

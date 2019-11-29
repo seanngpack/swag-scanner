@@ -8,6 +8,7 @@ import pcl
 import swagscanner.processing.depth as process_depth
 from swagscanner.scanner.arduino import Arduino
 from swagscanner.scanner.camera import Camera
+import threading
 
 
 class SwagScanner():
