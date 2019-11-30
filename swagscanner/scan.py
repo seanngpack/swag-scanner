@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import pcl
 import swagscanner.visualization.viewer as viewer
+from swagscanner.utils.file import FileSaver
 from swagscanner.processing.depth import DepthProcessor
 from swagscanner.scanner.arduino import Arduino
 from swagscanner.scanner.d435 import D435
@@ -18,19 +19,45 @@ class SwagScanner():
 
     '''
 
-    def __init__(self, camera=D435()):
+    def __init__(self, camera=D435(), fast=True, intervals=10):
+        self.file_saver = FileSaver()
         # self.arduino = Arduino()
         self.camera = camera
         self.depth_processor = DepthProcessor().initialize_processor(
-            camera=self.camera, fast=True)
+            camera=self.camera, fast=fast)
 
-    def get_pointcloud(self):
+        self.intervals = intervals
+        self.latest_point_cloud = None
+        self.scanned = {}
+
+    def get_point_cloud(self):
         '''Fetch a pointcloud
 
         '''
 
-        pointcloud = self.depth_processor.get_pointcloud()
-        return pointcloud
+        point_cloud = self.depth_processor.get_pointcloud()
+
+        # make sure to deallocate this as soon as you save the pointcloud
+        self.latest_point_cloud = point_cloud
+        return point_cloud
+
+    def save_point_cloud(self):
+        '''Save the pointcloud to file
+
+        Returns:
+            The path of the file saved
+
+        '''
+
+        current_scan = len(self.scanned) * self.intervals
+
+        saved = self.file_saver.save_point_cloud(self.latest_point_cloud,
+                                                 str(current_scan))
+
+        # deallocate pointcloud stored in memory
+        self.latest_point_cloud = None
+        self.scanned.update({str(current_scan): saved})
+        return saved
 
 
 def main():
@@ -42,9 +69,12 @@ def main():
     # TODO: continue converting to pointcloud
     # TODO: stitch them together
 
-    scanner = SwagScanner()
-    point_cloud = scanner.get_pointcloud()
-    viewer.visualize(point_cloud)
+    scanner = SwagScanner(fast=False)
+    scanner.get_point_cloud()
+    scanner.save_point_cloud()
+    print(scanner.scanned)
+
+    # viewer.visualize_from_file(scanner.scanned['0'])
 
 
 if __name__ == "__main__":

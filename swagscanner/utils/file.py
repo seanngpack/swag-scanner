@@ -3,20 +3,56 @@
 '''
 
 import pcl
-import datetime
+import os
+from pathlib import Path
 
 from swagscanner.utils.config import Config
 
 
-def save_point_cloud(pointcloud_xyz):
-    '''Save the pointcloud to a hardcoded location
-
-    Args:
-        pointcloud_xyz (PointcloudXYZ): a pointcloud
+class FileSaver():
+    '''Provides tools for saving pointcloud files
 
     '''
 
-    current_time = datetime.datetime.now()
-    save_path = (f'{Config.consts("PATHS", "SAVE_PATH")}cloud{current_time.day}-'
-                 f'{current_time.hour}-{current_time.minute}-{current_time.second}.pcd')
-    pcl.save(pointcloud_xyz, save_path)
+    def __init__(self):
+        self.folder_path = self.get_folder_path()
+        self.saved_files = []
+
+    def get_folder_path(self):
+        '''Get the folder path we should save our scan to and make the directory
+
+        Returns:
+            The folder path
+
+        '''
+
+        folder_path = Config.consts("PATHS", "SAVE_PATH")
+        # print only the folders in the folder path
+        dirs = next(os.walk(folder_path))[1]
+        # name the folder to store the scan (1 + the latest folder name)
+        folder_name = str(len(dirs) + 1)
+        folder_path = Path(folder_path) / folder_name
+
+        # make the folder path
+        os.makedirs(folder_path)
+
+        return folder_path
+
+    def save_point_cloud(self, point_cloud, file_name, save_path=None):
+        '''Save the pointcloud to a hardcoded location, otherwise specified
+        by function argument
+
+        Args:
+            point_cloud (PointcloudXYZ): a pointcloud
+            file_name (str): file name of the thing you want to save
+            save_path (str): optional argument if you want to save somewhere else
+
+        Returns:
+            The path of the file saved
+
+        '''
+
+        save_path = f'{self.folder_path}/{file_name}.pcd'
+        pcl.save(point_cloud, save_path)
+        self.saved_files.append(save_path)
+        return save_path

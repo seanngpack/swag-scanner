@@ -120,7 +120,6 @@ class DepthProcessorSlow(DepthProcessor):
         point_cloud = pcl.PointCloud()
         point_cloud.from_array(verts)
 
-        viewer.visualize(point_cloud)
         return point_cloud
 
     def deproject_depth_frame(self):
