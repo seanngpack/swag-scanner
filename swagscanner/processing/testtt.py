@@ -37,6 +37,18 @@ class TestICP(unittest.TestCase):
         target = np.dot(source, transform)
         self.target = pcl.PointCloud(target.astype(np.float32))
 
+        self.source = pcl.load('/Users/seanngpack/Programming Stuff/Projects/scanner_files/8/0.pcd')
+        print(self.source.size)
+        sor = self.source.make_voxel_grid_filter()
+        sor.set_leaf_size(0.01, 0.01, 0.01)
+        self.source = sor.filter()
+        print(self.source.size)
+
+        self.target = pcl.load('/Users/seanngpack/Programming Stuff/Projects/scanner_files/8/18.pcd')
+        sor2 = self.target.make_voxel_grid_filter()
+        sor2.set_leaf_size(0.01, 0.01, 0.01)
+        self.target = sor2.filter()
+        print(self.target.size)
         # print(dir(self.source.make_IterativeClosestPoint()))
 
     def testICP(self):

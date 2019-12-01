@@ -1,7 +1,3 @@
-'''Tools to deal with file handling and processing
-
-'''
-
 import pcl
 import os
 from pathlib import Path
@@ -14,11 +10,16 @@ class FileSaver():
 
     '''
 
-    def __init__(self):
-        self.folder_path = self.get_folder_path()
+    def __init__(self, folder_path=None):
+        if folder_path is None:
+            self.folder_path = self.get_default_folder_path()
+        else:
+            self.folder_path = folder_path
+            if not os.path.exists(folder_path):
+                os.makedirs(self.folder_path)
         self.saved_files = []
 
-    def get_folder_path(self):
+    def get_default_folder_path(self):
         '''Get the folder path we should save our scan to and make the directory
 
         Returns:
@@ -52,7 +53,10 @@ class FileSaver():
 
         '''
 
-        save_path = f'{self.folder_path}/{file_name}.pcd'
+        if save_path is None:
+            save_path = f'{self.folder_path}/{file_name}.pcd'
+        else:
+            save_path=f'{save_path}.pcd'
         pcl.save(point_cloud, save_path)
         self.saved_files.append(save_path)
         return save_path

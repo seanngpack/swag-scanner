@@ -12,6 +12,7 @@ from swagscanner.scanner.arduino import Arduino
 from swagscanner.scanner.d435 import D435
 from swagscanner.scanner.kinect import Kinect
 import threading
+import time
 
 
 class SwagScanner():
@@ -77,19 +78,20 @@ def main():
 
     '''
 
-    scanner = SwagScanner(fast=True)
+    scanner = SwagScanner(fast=True, interval=18)
 
     rotations = int(360/scanner.interval)
     for i in range(rotations):
         scanner.get_point_cloud()
         scanner.save_point_cloud()
         scanner.rotate_table()
+        time.sleep(4)
 
     # scanner.get_point_cloud()
     # scanner.save_point_cloud()
     # scanner.rotate_table()
 
-    viewer.visualize_from_file(scanner.scanned['0'])
+    viewer.visualize_from_file(scanner.scanned['30'])
 
 
 if __name__ == "__main__":
