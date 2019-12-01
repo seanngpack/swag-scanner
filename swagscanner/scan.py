@@ -19,14 +19,14 @@ class SwagScanner():
 
     '''
 
-    def __init__(self, camera=D435(), fast=True, intervals=10):
+    def __init__(self, camera=D435(), fast=True, interval=10):
         self.file_saver = FileSaver()
-        # self.arduino = Arduino()
+        self.arduino = Arduino()
         self.camera = camera
         self.depth_processor = DepthProcessor().initialize_processor(
             camera=self.camera, fast=fast)
 
-        self.intervals = intervals
+        self.interval = interval
         self.latest_point_cloud = None
         self.scanned = {}
 
@@ -49,7 +49,7 @@ class SwagScanner():
 
         '''
 
-        current_scan = len(self.scanned) * self.intervals
+        current_scan = len(self.scanned) * self.interval
 
         saved = self.file_saver.save_point_cloud(self.latest_point_cloud,
                                                  str(current_scan))
@@ -59,22 +59,37 @@ class SwagScanner():
         self.scanned.update({str(current_scan): saved})
         return saved
 
+    def rotate_table(self):
+        ''' rotate the bed
+
+        Returns:
+            The amount rotated
+            Current position?
+
+        '''
+
+        self.arduino.rotate_table(self.interval)
 
 def main():
-    # TODO: instantiate arduino
-    # TODO: grab depth
-    # TODO: convert to pointcloud
-    # TODO: keep rotating arduino
-    # TODO: keep grabbing depth
-    # TODO: continue converting to pointcloud
-    # TODO: stitch them together
+    '''Initialize arduino, camera, and scanner objects,
+    then grab images, save them, rotate table, and continue until
+    fully rotated.
 
-    scanner = SwagScanner(fast=False)
-    scanner.get_point_cloud()
-    scanner.save_point_cloud()
-    print(scanner.scanned)
+    '''
 
-    # viewer.visualize_from_file(scanner.scanned['0'])
+    scanner = SwagScanner(fast=True)
+
+    rotations = int(360/scanner.interval)
+    for i in range(rotations):
+        scanner.get_point_cloud()
+        scanner.save_point_cloud()
+        scanner.rotate_table()
+
+    # scanner.get_point_cloud()
+    # scanner.save_point_cloud()
+    # scanner.rotate_table()
+
+    viewer.visualize_from_file(scanner.scanned['0'])
 
 
 if __name__ == "__main__":

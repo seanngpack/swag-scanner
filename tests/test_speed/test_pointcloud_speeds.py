@@ -5,14 +5,14 @@ import timeit
 import numpy as np
 import numpy.testing as npt
 
-import swagscanner.acquisition.grab_depth as gd
-import swagscanner.processing.depth_processing as dp
+# import swagscanner.acquisition.grab_depth as gd
+# import swagscanner.processing.depth_processing as dp
 
 
 depth_to_meters_table = {
     num: (1.0 / (num * -0.0030711016 + 3.3309495161)) for num in range(2048)}
-zeros_map = np.empty([480, 640])
-random_map = np.random.randint(2048, size=(480, 640))
+zeros_map = np.empty([720, 1280])
+random_map = np.random.randint(2048, size=(720, 1280))
 
 
 def depth_to_real_world_vectorized(depth_map):
@@ -21,9 +21,9 @@ def depth_to_real_world_vectorized(depth_map):
     fy_d = 1.0 / 5.9104053696870778e+02
     cy_d = 2.4273913761751615e+02
 
-    depth_array = np.empty((307200, 3))
-    x_array = np.tile(np.arange(640), 480)
-    y_array = np.repeat(np.arange(480), 640)
+    depth_array = np.empty((921600, 3))
+    x_array = np.tile(np.arange(1280), 720)
+    y_array = np.repeat(np.arange(720), 1280)
 
     # perform calculations to convert to real world coordinates
     depth_array = [depth_to_meters_table[depth]
@@ -68,7 +68,7 @@ def depth_to_pointxyz(x: int, y: int, depth: int):
 
 def create_pointcloudxyz(depth_map):
 
-    point_cloud_array = np.empty((307200, 3), dtype=np.float32)
+    point_cloud_array = np.empty((921600, 3), dtype=np.float32)
     i = 0
     for index, value in np.ndenumerate(depth_map):
         y = index[0]
@@ -91,9 +91,9 @@ if __name__ == '__main__':
     flatten_create_pointcloudxyz_time = timeit.timeit(
         lambda: create_pointcloudxyz(zeros_map), number=40)
     print(
-        f'the time to create one pointcloud is: {flatten_create_pointcloudxyz_time} seconds')
+        f'the time to create one pointcloud is: {flatten_create_pointcloudxyz_time/40} seconds')
 
     vectorized_create_pointcloudxyz_time = timeit.timeit(
         lambda: create_pointcloudxyz_vectorized(zeros_map), number=40)
     print(
-        f'the time to create one pointcloud with vectorization is: {vectorized_create_pointcloudxyz_time} seconds')
+        f'the time to create one pointcloud with vectorization is: {vectorized_create_pointcloudxyz_time/40} seconds')

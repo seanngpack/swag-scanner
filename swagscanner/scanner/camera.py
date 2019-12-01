@@ -31,7 +31,7 @@ class Camera():
 
 
     def get_depth_frame(self):
-        '''Get a depth frame the camera
+        '''Get a depth frame from the camera
 
         Returns:
             A numpy array of the depth frame
@@ -39,4 +39,14 @@ class Camera():
         '''
 
         raise Exception ("Not Implemented")
+    
+
+    def get_depth_array(self):
+        '''Get a 1D numpy depth array from the depth frame
+        with units in meters
+
+        Returns:
+            depth array
+
+        '''
         
