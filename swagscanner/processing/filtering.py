@@ -1,6 +1,5 @@
 import os
 import pcl
-import re
 from swagscanner.utils.file import FileSaver
 
 
@@ -9,22 +8,26 @@ class Filtering():
 
     '''
 
-    def __init__(self, raw_depth_path, file_saver=None, folder_path=None):
-        if file_saver is None:
-            self.file_saver = FileSaver(folder_path=folder_path)
-            self.folder_path = folder_path
-        else:
-            self.file_saver = file_saver
+    def __init__(self, raw_depth_path, folder_path, file_saver=None):
         self.raw_depth_path = raw_depth_path
+        if file_saver is None:
+            self.folder_path = folder_path
+            self.file_saver = FileSaver(folder_path=self.folder_path)
+
+        else:
+            self.folder_path = folder_path
+            self.file_saver = file_saver
+            self.file_saver.folder_path = folder_path
 
     def voxel_grid_filtering(self, point_cloud, file_name):
 
         sor = point_cloud.make_voxel_grid_filter()
-        sor.set_leaf_size(0.01, 0.01, 0.01)
+        sor.set_leaf_size(0.001, 0.001, 0.001)
         point_cloud_filtered = sor.filter()
 
-        print(self.file_saver.save_point_cloud(point_cloud=point_cloud_filtered,
-                                               file_name=file_name))
+        self.file_saver.save_point_cloud(point_cloud=point_cloud_filtered,
+                                         file_name=file_name)
+        # TODO: log this
 
     def filter_all(self):
         '''Filter all the pointcloud files inside the clipped folder
@@ -32,20 +35,11 @@ class Filtering():
 
         '''
 
-        def floatify_name(name):
-            name = re.match(r'.*(?=\.)', name).group()
-            return float(name)
-        clouds = sorted([f for f in os.listdir(self.raw_depth_path)
-                         if f.endswith('.pcd')], key=floatify_name)
-
-        cloud_list = []
-        for cloud in clouds:
-            cloud_list.append(os.path.join(self.raw_depth_path, cloud))
+        cloud_list = self.file_saver.get_cloud_list(self.raw_depth_path)
 
         # filter everything
         for cloud in cloud_list:
             file_name = os.path.splitext(os.path.basename(cloud))[0]
-            # print(file_name)
             cloud = pcl.load(cloud)
             self.voxel_grid_filtering(cloud, file_name)
 

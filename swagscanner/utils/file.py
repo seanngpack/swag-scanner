@@ -1,7 +1,7 @@
 import pcl
 import os
 from pathlib import Path
-
+import re
 from swagscanner.utils.config import Config
 
 
@@ -38,6 +38,28 @@ class FileSaver():
         os.makedirs(folder_path)
 
         return folder_path
+
+    def get_cloud_list(self, folder_path):
+        '''Get the paths of all the pointclouds in the folder
+
+        Args:
+            folder_path (str): path to the folder containing the pointclouds
+
+        Returns:
+            List of paths of the pointclouds in the folder
+        '''
+
+        def floatify_name(name):
+            name = re.match(r'.*(?=\.)', name).group()
+            return float(name)
+        clouds = sorted([f for f in os.listdir(folder_path)
+                         if f.endswith('.pcd')], key=floatify_name)
+
+        cloud_list = []
+        for cloud in clouds:
+            cloud_list.append(os.path.join(folder_path, cloud))
+        
+        return cloud_list
 
     def save_point_cloud(self, point_cloud, file_name, save_path=None):
         '''Save the pointcloud to a hardcoded location, otherwise specified
