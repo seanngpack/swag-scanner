@@ -8,16 +8,16 @@ class Filtering():
 
     '''
 
-    def __init__(self, raw_depth_path, folder_path, file_saver=None):
-        self.raw_depth_path = raw_depth_path
+    def __init__(self, input_folder_path, write_folder_path, file_saver=None):
+        self.input_folder_path = input_folder_path
         if file_saver is None:
-            self.folder_path = folder_path
-            self.file_saver = FileSaver(folder_path=self.folder_path)
+            self.write_folder_path = write_folder_path
+            self.file_saver = FileSaver(folder_path=self.write_folder_path)
 
         else:
-            self.folder_path = folder_path
+            self.write_folder_path = write_folder_path
             self.file_saver = file_saver
-            self.file_saver.folder_path = folder_path
+            self.file_saver.write_folder_path = write_folder_path
 
     def voxel_grid_filtering(self, point_cloud, file_name):
 
@@ -35,7 +35,7 @@ class Filtering():
 
         '''
 
-        cloud_list = self.file_saver.get_cloud_list(self.raw_depth_path)
+        cloud_list = self.file_saver.get_cloud_list(self.input_folder_path)
 
         # filter everything
         for cloud in cloud_list:
@@ -45,8 +45,8 @@ class Filtering():
 
 
 def main():
-    filtering = Filtering(raw_depth_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/8/clipped',
-                          folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/8/filtered')
+    filtering = Filtering(input_folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/8/clipped',
+                          write_folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/8/filtered')
     filtering.filter_all()
 
 

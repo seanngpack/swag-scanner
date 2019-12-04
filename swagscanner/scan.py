@@ -8,6 +8,8 @@ import pcl
 import swagscanner.visualization.viewer as viewer
 from swagscanner.utils.file import FileSaver
 from swagscanner.processing.depth import DepthProcessor
+from swagscanner.processing.filtering import Filtering
+from swagscanner.processing.registration import Registration
 from swagscanner.scanner.arduino import Arduino
 from swagscanner.scanner.d435 import D435
 from swagscanner.scanner.kinect import Kinect
@@ -26,7 +28,10 @@ class SwagScanner():
         self.camera = camera
         self.depth_processor = DepthProcessor().initialize_processor(
             camera=self.camera, fast=fast)
-
+        self.filtering = Filtering(input_folder_path=self.file_saver.folder_path,
+                                   write_folder_path=f'{self.file_saver.folder_path}/filtered')
+        self.registration = Registration(input_folder_path=f'{self.file_saver.folder_path}/filtered',
+                                         write_folder_path=f'{self.file_saver.folder_path}/registration')
         self.interval = interval
         self.latest_point_cloud = None
         self.scanned = {}
@@ -60,6 +65,22 @@ class SwagScanner():
         self.scanned.update({str(current_scan): saved})
         return saved
 
+    def filter_all_clouds(self):
+        '''Filters all the scanned point clouds and writes
+        them to a /filtered directory
+
+        '''
+
+        self.filtering.filter_all()
+
+    def register_all_clouds(self):
+        '''Register all the point clouds and writes the output
+        to a /registered folder
+
+        '''
+
+        self.registration.register_all_clouds()
+
     def rotate_table(self):
         ''' rotate the bed
 
@@ -70,6 +91,7 @@ class SwagScanner():
         '''
 
         self.arduino.rotate_table(self.interval)
+
 
 def main():
     '''Initialize arduino, camera, and scanner objects,
@@ -86,12 +108,14 @@ def main():
         scanner.save_point_cloud()
         scanner.rotate_table()
         time.sleep(4)
+    scanner.filter_all_clouds()
+    scanner.register_all_clouds()
 
     # scanner.get_point_cloud()
     # scanner.save_point_cloud()
     # scanner.rotate_table()
 
-    viewer.visualize_from_file(scanner.scanned['30'])
+    # viewer.visualize_from_file(scanner.scanned['0'])
 
 
 if __name__ == "__main__":

@@ -58,9 +58,6 @@ class D435(Camera):
 
         '''
 
-        clipping_distance_in_meters = 1
-        clipping_distance = clipping_distance_in_meters / self.depth_scale
-
         frames = self.pipeline.wait_for_frames()
         depth_frame = frames.get_depth_frame()
         if not depth_frame:

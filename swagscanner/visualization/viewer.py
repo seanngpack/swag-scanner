@@ -7,6 +7,7 @@ import pcl
 import pcl.pcl_visualization
 import re
 import time
+from swagscanner.utils.file import FileSaver
 
 
 def visualize(point_cloud):
@@ -60,15 +61,9 @@ def visualize_from_folder(folder_path):
     '''Visualize all the pointclouds in a given folder 
 
     '''
-    
-    def floatify_name(name):
-        name = re.match(r'.*(?=\.)', name).group()
-        return float(name)
-    clouds = sorted([f for f in os.listdir(folder_path)
-                        if f.endswith('.pcd')], key=floatify_name)
-    cloud_list = []
-    for cloud in clouds:
-        cloud_list.append(os.path.join(folder_path, cloud))
+
+    file_saver = FileSaver(folder_path=folder_path)
+    cloud_list = file_saver.get_cloud_list(folder_path)
 
     viewer = pcl.pcl_visualization.PCLVisualizering('cloud visualizer yo')
     count = 0
@@ -86,7 +81,9 @@ def visualize_from_folder(folder_path):
 
 
 def main():
-    visualize_from_folder('/Users/seanngpack/Programming Stuff/Projects/scanner_files/8/filtered')
+    visualize_from_folder('/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/registration')
+    # visualize_from_file('/Users/seanngpack/Programming Stuff/Projects/scanner_files/10/registration/registered.pcd')
+    # visualize_from_file('/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/0.pcd')
 
 if __name__ == "__main__":
     main()
