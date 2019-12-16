@@ -14,11 +14,11 @@ class Registration():
 
     '''
 
-    def __init__(self, input_folder_path, write_folder_path, file_saver=None):
+    def __init__(self, input_folder_path, write_folder_path, file_saver=None, generate_folder=True):
         if file_saver is None:
             self.input_folder_path = input_folder_path
             self.write_folder_path = write_folder_path
-            self.file_saver = FileSaver(folder_path=self.write_folder_path)
+            self.file_saver = FileSaver(folder_path=self.write_folder_path, generate_folder=generate_folder)
 
         else:
             self.input_folder_path = input_folder_path
@@ -42,32 +42,17 @@ class Registration():
 
         icp = source.make_IterativeClosestPoint()
         converged, transf, estimate, fitness = icp.icp(
-            source, target,)
+            source, target, max_iter=100)
 
         print('has converged:' + str(converged) + ' score: ' + str(fitness))
 
-        # convert the pointcloud to array and append ones column
-        estimate = estimate.to_array()
-        # add ones column
-        estimate = np.hstack(
-            (estimate, np.ones((estimate.shape[0], 1))))
-
-        # Take inverse of the transformation matrix to get the transform
-        # from the target to the source
-        transf = np.linalg.inv(transf)
-        # Get the transformation from target to source
-        estimate = np.dot(estimate, transf)
-
-        estimate = estimate[:, :3]
-        estimate = estimate.astype(np.float32)
-        
-        temp_cloud = pcl.PointCloud()          
-        temp_cloud.from_array(estimate)
-
         print(str(transf))
-        print(temp_cloud)
+        print(estimate)
 
-        return temp_cloud, transf
+        # apply transformation from target cloud to map back to source cloud frame
+        result = self.map_cloud_operation(target, transf, np.dot)
+
+        return result, transf
 
     def register_all_clouds_o3d(self):
         '''register all the pointclouds found in the given folder
@@ -143,18 +128,8 @@ class Registration():
             estimation, pair_transform = self.register_pair_clouds(
                 source, target)
 
-            estimation = estimation.to_array()
-            # add ones column
-            estimation = np.hstack(
-                (estimation, np.ones((estimation.shape[0], 1))))
-            # transform the estimation by the global transform and save result to result_array
-            result_array = np.dot(estimation, global_transform)
+            result = self.map_cloud_operation(estimation, global_transform, np.dot)
 
-            result_array = result_array[:, :3]
-            result_array = result_array.astype(np.float32)
-
-            result = pcl.PointCloud()
-            result.from_array(result_array)
 
             # update the global transformation
             global_transform *= pair_transform
@@ -164,6 +139,35 @@ class Registration():
             self.file_saver.save_point_cloud(point_cloud=result,
                                              file_name=str(index))
         return source
+
+    def map_cloud_operation(self, cloud, matrix, func):
+        '''Allows you to apply a matrix operation on a pointcloud
+
+        Args:
+            cloud(PointCloudXYZ): the pointcloud you want to modify
+            matrix (array): the matrix you want to use to apply on the cloud
+            func (function): the function you want to map
+
+        Returns:
+            the modified cloud
+
+        '''
+
+        cloud_array = cloud.to_array()
+        # add ones column
+        cloud_array = np.hstack(
+            (cloud_array, np.ones((cloud_array.shape[0], 1))))
+        
+        # apply the function
+        cloud_array = func(cloud_array, matrix)
+
+        # trim off the last column and cast the array to float32
+        cloud_array = cloud_array[:, :3]
+        cloud_array = cloud_array.astype(np.float32)
+
+        result = pcl.PointCloud()
+        result.from_array(cloud_array)
+        return result
 
 
 def main():
@@ -179,7 +183,7 @@ def main():
     print(target.size)
     registered, transf = registration.register_pair_clouds(source, target)
     # print(registered.size)
-    viewer.visualize(source, registered)
+    viewer.visualize(source, target, registered)
     # viewer.visualize_from_folder(
     #     '/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/registration')
 

@@ -10,14 +10,26 @@ class FileSaver():
 
     '''
 
-    def __init__(self, folder_path=None):
-        if folder_path is None:
-            self.folder_path = self.get_default_folder_path()
+    def __init__(self, folder_path=None, generate_folder=True):
+        '''If the generate_folder flag is true, then proceed to automatically
+        detect existing SwagScanner files and create a new folder for the new scan
+        Otherwise, set the working folder to the current working directory--
+        this is useful for unit testing because we don't want to generate a million
+        useless folders
+
+        '''
+        
+        if generate_folder is False:
+            self.folder_path = os.getcwd()
         else:
-            self.folder_path = folder_path
-            if not os.path.exists(folder_path):
-                os.makedirs(self.folder_path)
-        self.saved_files = []
+            if folder_path is None:
+                self.folder_path = self.get_default_folder_path()
+            else:
+                self.folder_path = folder_path
+                if not os.path.exists(folder_path):
+                    os.makedirs(self.folder_path)
+            self.saved_files = []
+
 
     def get_default_folder_path(self):
         '''Get the folder path we should save our scan to and make the directory
