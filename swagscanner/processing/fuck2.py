@@ -28,15 +28,15 @@ if __name__ == "__main__":
     #                                                     threshold, trans_init)
     # print(evaluation)
 
-    # print("Apply point-to-point ICP")
-    # reg_p2p = o3d.registration.registration_icp(
-    #     source, target, threshold, trans_init,
-    #     o3d.registration.TransformationEstimationPointToPoint())
-    # print(reg_p2p)
-    # print("Transformation is:")
-    # print(reg_p2p.transformation)
-    # print("")
-    # draw_registration_result(source, target, reg_p2p.transformation)
+    print("Apply point-to-point ICP")
+    reg_p2p = o3d.registration.registration_icp(
+        source, target, threshold, trans_init,
+        o3d.registration.TransformationEstimationPointToPoint())
+    print(reg_p2p)
+    print("Transformation is:")
+    print(reg_p2p.transformation)
+    print("")
+    draw_registration_result(source, target, reg_p2p.transformation)
 
     print("Apply point-to-plane ICP")
     reg_p2l = o3d.registration.registration_icp(

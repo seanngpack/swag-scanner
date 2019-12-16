@@ -22,7 +22,7 @@ class Filtering():
     def voxel_grid_filtering(self, point_cloud, file_name):
 
         sor = point_cloud.make_voxel_grid_filter()
-        sor.set_leaf_size(0.001, 0.001, 0.001)
+        sor.set_leaf_size(0.0005, 0.0005, 0.0005)
         point_cloud_filtered = sor.filter()
 
         self.file_saver.save_point_cloud(point_cloud=point_cloud_filtered,
@@ -45,8 +45,8 @@ class Filtering():
 
 
 def main():
-    filtering = Filtering(input_folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/8/clipped',
-                          write_folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/8/filtered')
+    filtering = Filtering(input_folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/7/',
+                          write_folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/7/filtered')
     filtering.filter_all()
 
 
