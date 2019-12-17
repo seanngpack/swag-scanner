@@ -45,8 +45,6 @@ class DepthProcessor():
         '''
 
         shape = point_cloud_array.shape
-        width_clipping_percentage = 70
-        height_clipping_percentage = 70
 
         point_cloud_array = point_cloud_array[(point_cloud_array[:, 0] > -.2) &
                                               (point_cloud_array[:, 0] < .2) &

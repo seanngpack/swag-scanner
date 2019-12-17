@@ -1,5 +1,6 @@
 import os
 import pcl
+import swagscanner.processing.segmentation as segmentation
 from swagscanner.utils.file import FileSaver
 
 
@@ -25,9 +26,14 @@ class Filtering():
         sor.set_leaf_size(0.0005, 0.0005, 0.0005)
         point_cloud_filtered = sor.filter()
 
+        # TODO: THIS IS HACKY, PUT THE SEGMENTATION IN ITS OWN THING!!
+        # TODO: log this
+        point_cloud_filtered = segmentation.segment_plane(point_cloud_filtered)
+
+        # save dis
         self.file_saver.save_point_cloud(point_cloud=point_cloud_filtered,
                                          file_name=file_name)
-        # TODO: log this
+        
 
     def filter_all(self):
         '''Filter all the pointcloud files inside the clipped folder
@@ -45,8 +51,8 @@ class Filtering():
 
 
 def main():
-    filtering = Filtering(input_folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/7/',
-                          write_folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/7/filtered')
+    filtering = Filtering(input_folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/',
+                          write_folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/filtered')
     filtering.filter_all()
 
 

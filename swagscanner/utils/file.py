@@ -5,6 +5,7 @@ import re
 from swagscanner.utils.config import Config
 
 
+
 class FileSaver():
     '''Provides tools for saving pointcloud files
 
@@ -18,7 +19,7 @@ class FileSaver():
         useless folders
 
         '''
-        
+
         if generate_folder is False:
             self.folder_path = os.getcwd()
         else:
@@ -29,7 +30,6 @@ class FileSaver():
                 if not os.path.exists(folder_path):
                     os.makedirs(self.folder_path)
             self.saved_files = []
-
 
     def get_default_folder_path(self):
         '''Get the folder path we should save our scan to and make the directory
@@ -59,7 +59,7 @@ class FileSaver():
 
         Returns:
             List of paths of the pointclouds in the folder
-            
+
         '''
 
         def floatify_name(name):
@@ -71,7 +71,7 @@ class FileSaver():
         cloud_list = []
         for cloud in clouds:
             cloud_list.append(os.path.join(folder_path, cloud))
-        
+
         return cloud_list
 
     def save_point_cloud(self, point_cloud, file_name, save_path=None):
@@ -91,7 +91,7 @@ class FileSaver():
         if save_path is None:
             save_path = f'{self.folder_path}/{file_name}.pcd'
         else:
-            save_path=f'{save_path}.pcd'
+            save_path = f'{save_path}.pcd'
         pcl.save(point_cloud, save_path)
         self.saved_files.append(save_path)
         return save_path

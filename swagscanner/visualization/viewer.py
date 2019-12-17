@@ -13,7 +13,7 @@ from swagscanner.utils.file import FileSaver
 import numpy as np
 
 
-def visualize(cloud, *clouds):
+def visualize(source, target=None, registered=None):
     '''Visualize a pointcloud. Can handle multiple cloud inputs.
     The base cloud will be colored blue, the rest are randomly colored.
 
@@ -24,22 +24,19 @@ def visualize(cloud, *clouds):
 
     viewer = pcl.pcl_visualization.PCLVisualizering('cloud visualizer yo')
     pccolor = pcl.pcl_visualization.PointCloudColorHandleringCustom(
-        cloud, 0, 0, 255)
-    viewer.AddPointCloud_ColorHandler(cloud, pccolor)
+        source, 255, 255, 0)
+    viewer.AddPointCloud_ColorHandler(source, pccolor, bytes(1),0)
 
-    count = 0
-    for cloud in clouds:
+    if target:
+        pccolor = pcl.pcl_visualization.PointCloudColorHandleringCustom(
+        target, 0, 0, 255)
+        viewer.AddPointCloud_ColorHandler(target, pccolor, bytes(2),0)
 
-        pccolor = pcl.pcl_visualization.PointCloudColorHandleringCustom(cloud,
-                                                                        random.randrange(
-                                                                            0, 255),
-                                                                        random.randrange(
-                                                                            0, 255),
-                                                                        random.randrange(0, 255))
-        viewer.AddPointCloud_ColorHandler(
-            cloud, pccolor,  b'%b' % bytes(count), 0)
-        count += 1
-
+    if registered:
+        pccolor = pcl.pcl_visualization.PointCloudColorHandleringCustom(
+        registered, 0, 255, 0)
+        viewer.AddPointCloud_ColorHandler(registered, pccolor, bytes(3),0)
+        
     v = True
     while v:
         v = not(viewer.WasStopped())
@@ -96,7 +93,7 @@ def visualize_from_folder(folder_path):
 
 def main():
     visualize_from_folder(
-        '/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/filtered')
+        '/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/registration')
     # visualize_from_file('/Users/seanngpack/Programming Stuff/Projects/scanner_files/13/registration/18.pcd')
     # visualize_from_file('/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/0.pcd')
 
