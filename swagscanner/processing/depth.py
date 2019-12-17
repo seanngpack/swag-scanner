@@ -50,7 +50,7 @@ class DepthProcessor():
                                               (point_cloud_array[:, 0] < .2) &
                                               (point_cloud_array[:, 1] > -.5) &
                                               (point_cloud_array[:, 1] < .15) &
-                                              (point_cloud_array[:, 2] < .7)]
+                                              (point_cloud_array[:, 2] < .44)]
         return point_cloud_array
 
 

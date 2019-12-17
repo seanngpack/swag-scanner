@@ -79,7 +79,7 @@ class SwagScanner():
 
         '''
 
-        self.registration.register_all_clouds()
+        self.registration.register_all_clouds_o3d()
 
     def rotate_table(self):
         ''' rotate the bed
@@ -100,7 +100,7 @@ def main():
 
     '''
 
-    scanner = SwagScanner(fast=True, interval=18)
+    scanner = SwagScanner(fast=True, interval=9)
 
     rotations = int(360/scanner.interval)
     for i in range(rotations):

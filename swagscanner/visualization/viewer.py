@@ -25,18 +25,18 @@ def visualize(source, target=None, registered=None):
     viewer = pcl.pcl_visualization.PCLVisualizering('cloud visualizer yo')
     pccolor = pcl.pcl_visualization.PointCloudColorHandleringCustom(
         source, 255, 255, 0)
-    viewer.AddPointCloud_ColorHandler(source, pccolor, bytes(1),0)
+    viewer.AddPointCloud_ColorHandler(source, pccolor, bytes(1), 0)
 
     if target:
         pccolor = pcl.pcl_visualization.PointCloudColorHandleringCustom(
-        target, 0, 0, 255)
-        viewer.AddPointCloud_ColorHandler(target, pccolor, bytes(2),0)
+            target, 0, 0, 255)
+        viewer.AddPointCloud_ColorHandler(target, pccolor, bytes(2), 0)
 
     if registered:
         pccolor = pcl.pcl_visualization.PointCloudColorHandleringCustom(
-        registered, 0, 255, 0)
-        viewer.AddPointCloud_ColorHandler(registered, pccolor, bytes(3),0)
-        
+            registered, 0, 255, 0)
+        viewer.AddPointCloud_ColorHandler(registered, pccolor, bytes(3), 0)
+
     v = True
     while v:
         v = not(viewer.WasStopped())
@@ -93,8 +93,17 @@ def visualize_from_folder(folder_path):
 
 def main():
     visualize_from_folder(
-        '/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/registration')
-    # visualize_from_file('/Users/seanngpack/Programming Stuff/Projects/scanner_files/13/registration/18.pcd')
+        '/Users/seanngpack/Programming Stuff/Projects/scanner_files/15/registration')
+    # visualize_from_file('/Users/seanngpack/Programming Stuff/Projects/scanner_files/14/registration/0.pcd',
+    #                     '/Users/seanngpack/Programming Stuff/Projects/scanner_files/14/registration/1.pcd',
+    #                     '/Users/seanngpack/Programming Stuff/Projects/scanner_files/14/registration/2.pcd',
+    #                     '/Users/seanngpack/Programming Stuff/Projects/scanner_files/14/registration/3.pcd',
+    #                     '/Users/seanngpack/Programming Stuff/Projects/scanner_files/14/registration/4.pcd',
+    #                     '/Users/seanngpack/Programming Stuff/Projects/scanner_files/14/registration/5.pcd',                        
+    #                     '/Users/seanngpack/Programming Stuff/Projects/scanner_files/14/registration/6.pcd',
+    #                     )
+    # visualize_from_file('/Users/seanngpack/Programming Stuff/Projects/scanner_files/12/registration/0.pcd',
+    #                     '/Users/seanngpack/Programming Stuff/Projects/scanner_files/12/registration/1.pcd')
     # visualize_from_file('/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/0.pcd')
 
 
