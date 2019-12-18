@@ -12,7 +12,6 @@ class Config:
 
     '''
 
-    print('printing this out to note that the config loader was instantiated')
     config = ConfigParser(inline_comment_prefixes="#")
     config.read("swagscanner/utils/config.ini")
 
