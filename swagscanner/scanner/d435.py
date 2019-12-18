@@ -81,4 +81,8 @@ class D435(Camera):
         return depth_array
 
     def stop_pipeline(self):
+        '''Stop camera pipeline
+
+        '''
+        
         self.pipeline.stop()

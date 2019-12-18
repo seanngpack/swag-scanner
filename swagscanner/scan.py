@@ -42,8 +42,6 @@ class SwagScanner():
         '''
 
         point_cloud = self.depth_processor.get_pointcloud()
-
-        # make sure to deallocate this as soon as you save the pointcloud
         self.latest_point_cloud = point_cloud
         return point_cloud
 

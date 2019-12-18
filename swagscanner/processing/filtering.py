@@ -20,10 +20,18 @@ class Filtering():
             self.file_saver = file_saver
             self.file_saver.write_folder_path = write_folder_path
 
-    def voxel_grid_filtering(self, point_cloud, file_name):
+    def voxel_grid_filtering(self, point_cloud, file_name, leaf_size=0.0005):
+        '''Apply voxel grid filtering to downsample point cloud to more manageable size
+
+        Args:
+            point_cloud (PointCloud): cloud you want to downsample
+            file_name (str): path to the cloud you want to downsample
+            leaf_size (float): leaf size for downsampling
+
+        '''
 
         sor = point_cloud.make_voxel_grid_filter()
-        sor.set_leaf_size(0.0005, 0.0005, 0.0005)
+        sor.set_leaf_size(leaf_size, leaf_size, leaf_size)
         point_cloud_filtered = sor.filter()
 
         # TODO: THIS IS HACKY, PUT THE SEGMENTATION IN ITS OWN THING!!
@@ -33,7 +41,6 @@ class Filtering():
         # save dis
         self.file_saver.save_point_cloud(point_cloud=point_cloud_filtered,
                                          file_name=file_name)
-        
 
     def filter_all(self):
         '''Filter all the pointcloud files inside the clipped folder

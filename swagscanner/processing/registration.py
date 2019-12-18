@@ -6,7 +6,6 @@ from pathlib import Path
 import re
 from swagscanner.utils.file import FileSaver
 import swagscanner.processing.segmentation as segmentation
-import swagscanner.visualization.viewer as viewer
 import open3d as o3d
 
 
@@ -19,7 +18,8 @@ class Registration():
         if file_saver is None:
             self.input_folder_path = input_folder_path
             self.write_folder_path = write_folder_path
-            self.file_saver = FileSaver(folder_path=self.write_folder_path, generate_folder=generate_folder)
+            self.file_saver = FileSaver(
+                folder_path=self.write_folder_path, generate_folder=generate_folder)
 
         else:
             self.input_folder_path = input_folder_path
@@ -54,7 +54,7 @@ class Registration():
 
         return result, transf
 
-    def register_pair_clouds_o3d(self, source, target, threshold = 0.02):
+    def register_pair_clouds_o3d(self, source, target, threshold=0.02):
         '''Uses ICP algorithm to find correspondence between two clouds.
         Note: for incrementally iterating through pairs of clouds
         you want to transform the clouds with the first cloud frame,
@@ -66,16 +66,16 @@ class Registration():
 
         Returns: the registered clouds
 
-        '''      
+        '''
 
         # convert PointCloudXYZ to PointCloud
         reg_p2p = o3d.registration.registration_icp(
-                source, target, threshold, np.identity(4),
-                o3d.registration.TransformationEstimationPointToPoint())
+            source, target, threshold, np.identity(4),
+            o3d.registration.TransformationEstimationPointToPoint())
 
         transf = np.asarray(reg_p2p.transformation, dtype=np.float32)
         # print(transf)
-        
+
         return transf
 
     def register_all_clouds_o3d(self):
@@ -99,13 +99,12 @@ class Registration():
             transf = self.register_pair_clouds_o3d(source, target, threshold)
             transf_inv = np.linalg.inv(transf)
             # print(transf_inv)
-            
+
             result = target.transform(global_transform)
-            
+
             result_temp = pcl.PointCloud()
             result_temp.from_array(np.asarray(result.points, np.float32))
             result = result_temp
-
 
             global_transform = np.dot(global_transform, transf_inv)
             print(global_transform)
@@ -128,20 +127,18 @@ class Registration():
         global_transform = np.identity(4)
         # perform iterative registration
         for index in range(len(cloud_list)-1):
-            source = pcl.load(cloud_list[0])
+            source = pcl.load(cloud_list[index])
             target = pcl.load(cloud_list[index+1])
 
             estimation, pair_transform = self.register_pair_clouds(
                 source, target)
 
-            result = self.map_cloud_operation(estimation, global_transform, np.dot)
-
+            result = self.map_cloud_operation(
+                estimation, global_transform, np.dot)
 
             # update the global transformation
-            global_transform *= pair_transform
-            # print(pair_transform)
-            # print(global_transform)
-
+            global_transform = np.dot(global_transform, pair_transform)
+        
             self.file_saver.save_point_cloud(point_cloud=result,
                                              file_name=str(index))
         return source
@@ -163,7 +160,7 @@ class Registration():
         # add ones column
         cloud_array = np.hstack(
             (cloud_array, np.ones((cloud_array.shape[0], 1))))
-        
+
         # apply the function
         cloud_array = func(cloud_array, matrix)
 
@@ -181,29 +178,6 @@ def main():
         input_folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/15/filtered',
         write_folder_path='/Users/seanngpack/Programming Stuff/Projects/scanner_files/15/registration')
     registered = registration.register_all_clouds_o3d()
-    
-    # source_pcl = pcl.load(
-    #     '/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/filtered/0.pcd')
-    # target_pcl = pcl.load(
-    #     '/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/filtered/18.pcd')
-    # source = o3d.io.read_point_cloud('/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/filtered/0.pcd')
-    # target = o3d.io.read_point_cloud('/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/filtered/18.pcd')
-    # # # print(target.size)
-    # print('registering...')
-    # transf = registration.register_pair_clouds_o3d(source, target)
-    # # print(transf)
-    # transf_inv = np.linalg.inv(transf)
-    # # print(transf_inv)
-
-    # registered_o3d = target.transform(transf_inv)
-    # registered_pcl = pcl.PointCloud()
-    # registered_pcl.from_array(np.asarray(registered_o3d.points, np.float32))
-    # # registered = registration.map_cloud_operation(target_pcl, transf_inv, np.dot)
-    # viewer.visualize(source=source_pcl, registered=registered_pcl)
-    
-
-    # viewer.visualize_from_folder(
-    #     '/Users/seanngpack/Programming Stuff/Projects/scanner_files/9/registration')
 
 
 if __name__ == "__main__":
