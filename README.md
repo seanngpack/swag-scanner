@@ -1,6 +1,6 @@
-# Swag Scanner
+# SwagScanner
 
-Swag Scanner is a device that can scan your small/medium-sized objects into the virtual world. All hardware is built completely from the ground up and Swag Scanner leverages the accuracy of the Intel D435 camera. I designed the software pipeline to be extensible, robust, and fast. V1 of the scanner uses the Intel sensor, future versions will feature the Kinect sensor for a low-cost sensor alternative. You can find more information on my design process and challenges on [my website](https://www.seanngpack.com/3D-Scanner/).
+SwagScanner is a device that can scan your small/medium-sized objects into the virtual world. All hardware is designed and built from the ground up. I designed the software pipeline to be extensible, robust, and fast. Compatible with any depth camera--just verify its minimum scanning distance and acquire the correct mounting hardware and API and you're good to go. You can find more information about the design process and challenges on [my website](https://www.seanngpack.com/swagscanner/).
 
 ## Getting Started
 
