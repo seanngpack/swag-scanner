@@ -1,7 +1,7 @@
 /*
   main.cpp
   This file sets up bluetooth capabilities and defines functions for rotating
-  the a stepper motor using the AccelStepper library
+  the stepper motor using the AccelStepper library
   The circuit:
   - Arduino Nano 33 IoT, DRV8825 driver, Nema 17 17HS08-1004S (18.4oz-in) stepper,
   You can use a generic BLE central app, like LightBlue (iOS and Android) or
@@ -38,7 +38,8 @@ const int sleepPin = 4;
 const int gearRatio = 60;
 const int stepsPerRev = 200;
 const float degPerStep = 360.0/float(stepsPerRev * gearRatio);
-const int motorSpeed = 350;
+const int motorSpeed = 375;
+int tablePosition = 0;
 
 // create new instance of stepper motor
 AccelStepper stepper = AccelStepper(motorInterfaceType, stepPin, dirPin);
@@ -135,7 +136,7 @@ void rotateTable(int degs)
   long nextStepperPosition = stepper.currentPosition() + steps;
   Serial.println((String)"next position at:" + nextStepperPosition);
 
-  Serial.println((String)"table position before: "  + getTablePosition());
+  Serial.println((String)"table position before: "  + getTablePosition(degs));
 
   // set the stepper to rotate CW 
   if (steps > 0) {
@@ -156,7 +157,7 @@ void rotateTable(int degs)
   isTableRotatingCharacteristic.setValue(0);
   Serial.print((String)"finished rotating the stepper... " + stepper.currentPosition());
 
-  Serial.println((String)"table position after: " + getTablePosition());
+  Serial.println((String)"table position after: " + getTablePosition(0));
 }
 
 // convert the BLE input of degrees to # of steps for the stepper to move
@@ -176,10 +177,11 @@ long degToSteps(int degs)
 }
 
 // get the current position of the table away from home (0 deg) in degrees
-long getTablePosition()
+long getTablePosition(int degs)
 {
-  long tablePosition = fmod(((float)(stepper.currentPosition()) * degPerStep), 360.0);
-  Serial.println((String)"this is the current table position" + tablePosition);
-  tablePositionCharacteristic.setValue(tablePosition);
-  return tablePosition;
+  tablePosition += degs;
+  int currentPosition = tablePosition % 360;
+  Serial.println((String)"this is the current table position" + currentPosition);
+  tablePositionCharacteristic.setValue(currentPosition);
+  return currentPosition;
 }
