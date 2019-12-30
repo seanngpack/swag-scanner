@@ -40,7 +40,7 @@ class DepthProcessor():
         Clips the array after deprojection, can speed things up by
         clipping immediately after grabbing the depth frame.
 
-        TODO: Put it there when I have more time.
+        TODO: Implement in each camera object instead?
 
         '''
 
