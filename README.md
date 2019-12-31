@@ -1,10 +1,10 @@
 # SwagScanner
 
-SwagScanner is a device that can scan your small/medium-sized objects into the virtual world. All hardware is designed and built from the ground up. I designed the software pipeline to be extensible, robust, and fast. Compatible with any depth camera--just verify its minimum scanning distance and acquire the correct mounting hardware and API and you're good to go. You can find more information about the design process and challenges on [my website](https://www.seanngpack.com/swagscanner/).
+SwagScanner is a device that can scan your small/medium-sized objects into the virtual world. The system is designed and built from the ground up. I designed the software pipeline to be extensible, robust, and fast. SwagScanner is compatible with any depth camera--just verify its minimum scanning distance and acquire the correct mounting hardware and API and you're good to go. You can find more information about the design process and challenges on [my website](https://www.seanngpack.com/swagscanner/).
 
 ## Getting Started
 
-These instructions will guide you through the process of setting up Swag Scanner on your local machine. Complete BOM for the hardware coming soon.
+These instructions will guide you through the process of setting up SwagScanner on your local machine. Complete BOM for the hardware coming soon.
 
 ### Prerequisites
 
