@@ -11,6 +11,7 @@ class Filtering():
 
     def __init__(self, input_folder_path, write_folder_path, file_saver=None, leaf_size=.0005):
         self.input_folder_path = input_folder_path
+        self.leaf_size = leaf_size
         if file_saver is None:
             self.write_folder_path = write_folder_path
             self.file_saver = FileSaver(folder_path=self.write_folder_path)
@@ -34,7 +35,7 @@ class Filtering():
         segmented_cloud = segmentation.segment_plane(point_cloud)
         return segmented_cloud
 
-    def voxel_grid_filtering(self, point_cloud, file_name, leaf_size=self.leaf_size):
+    def voxel_grid_filtering(self, point_cloud, file_name):
         '''Apply voxel grid filtering to downsample point cloud to more manageable size
 
         Args:

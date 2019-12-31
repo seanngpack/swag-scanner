@@ -8,7 +8,7 @@ These instructions will guide you through the process of setting up Swag Scanner
 
 ### Prerequisites
 
-Currently MacOS and Linux are the only supported platforms due to non-universal Bluetooth low-energy libraries. Let's get started with installing non-pip libraries:
+Currently MacOS and Linux are the only supported platforms due to non-universal Bluetooth low-energy libraries. The setup process is kind of painful, but I have painstakingly found good, working solutions that you can easily follow along.
 
 
 ```
@@ -31,6 +31,8 @@ Let's setup your Swag Scanner environment
 
 
 ```
+# Installing basic requirements
+
 $ git clone https://github.com/seanngpack/swag-scanner/
 $ cd swag-scanner
 $ virtualenv venv
@@ -38,8 +40,33 @@ $ source venv/bin/activate
 $ (venv) pip install -r requirements.txt
 $ (venv) pip install -e .
 ```
+
+```
+# Installing pcl and python-pcl
+# cd to some random folder
+
+$ git clone https://github.com/PointCloudLibrary/pcl 
+$ mkdir build
+$ cd build
+$ cmake .. 
+$ make
+$ sudo make install
+
+# Now we can install python-pcl
+# cd to some random folder and have your virtual environment activated
+
+$ (venv) git clone https://github.com/strawlab/python-pcl.git
+$ (venv) cd python-pcl
+# go into setup.py, change line 710 to the version of vtk that's installed in your system, and change all instances of 'c++11' to 'c++14'
+$ (venv) sudo python setup.py clean
+$ (venv) sudo make clean
+$ (venv) sudo make all
+$ (venv) sudo python setup.py install
+```
+
 ```
 # Installing Adafruit's bluetooth library
+# cd to some random folder
 
 $ (venv) git clone https://github.com/adafruit/Adafruit_Python_BluefruitLE
 $ (venv) cd Adafruit_Python_BluefruitLE
@@ -48,7 +75,7 @@ $ (venv) python setup.py install
 
 ## Authors
 
-* **Sean Ng Pack** - *literally everything* - [seanngpack.com](https://www.seanngpack.com)
+* **Sean Ng Pack** - [seanngpack.com](https://www.seanngpack.com)
 
 
 ## License
