@@ -177,6 +177,7 @@ long degToSteps(int degs)
 }
 
 // get the current position of the table away from home (0 deg) in degrees
+// TODO: convert currentPosition to bytes then send to characteristic!!
 long getTablePosition(int degs)
 {
   tablePosition += degs;
