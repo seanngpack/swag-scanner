@@ -3,7 +3,7 @@ import pcl
 
 
 class Camera():
-    '''Camera object
+    '''Camera interface
 
     '''
 
