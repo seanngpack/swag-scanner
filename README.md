@@ -6,7 +6,7 @@
 
 <p align="center">
     <img src="https://raw.githubusercontent.com/seanngpack/swag-scanner/master/logo/logo.png"
-        height="130">
+        height="250">
 </p>
 
 SwagScanner is a device that can scan your small/medium-sized objects into the virtual world. The system is designed and built from the ground up. I designed the software pipeline to be extensible, robust, and fast. SwagScanner is compatible with any depth camera--just verify its minimum scanning distance and acquire the correct mounting hardware and API and you're good to go. You can find more information about the design process and challenges on [my website](https://www.seanngpack.com/swagscanner/).
