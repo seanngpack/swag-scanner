@@ -5,7 +5,7 @@
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/seanngpack/swag-scanner/master/LICENSE)  
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/seanngpack/swag-scanner/master/logo/logo.png"
+    <img src="https://raw.githubusercontent.com/seanngpack/swag-scanner/master/logo/swag-scanner-logo.png"
         height="250">
 </p>
 
