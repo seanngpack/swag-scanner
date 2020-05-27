@@ -2,6 +2,10 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"name": "swag_scanner",
+			"path": "arduino/swag_scanner"
 		}
 	],
 	"settings": {

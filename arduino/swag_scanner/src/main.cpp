@@ -20,21 +20,24 @@ BLEService scannerService("5ffba521-2363-41da-92f5-46adc56b2d37");
 
 // BLE Scanner characterisic - custom 128-bit UUID, read and writable by central
 // BLERead | BLEWrite remote clients will be able to read & write
-BLEByteCharacteristic rotateTableCharacteristic("5ffba522-2363-41da-92f5-46adc56b2d37", BLERead | BLEWrite);
+BLEIntCharacteristic rotateTableCharacteristic("5ffba522-2363-41da-92f5-46adc56b2d37", BLERead | BLEWrite);
 
 // BLE Scanner characterisic - custom 128-bit UUID, read and writable by central
 // BLERead | BLENotify remote clients will be able to get notifications if this characteristic changes
-BLEByteCharacteristic tablePositionCharacteristic("5ffba523-2363-41da-92f5-46adc56b2d37", BLERead | BLENotify);
+BLEIntCharacteristic tablePositionCharacteristic("5ffba523-2363-41da-92f5-46adc56b2d37", BLERead | BLENotify);
 
 // BLE Scanner characterisic - custom 128-bit UUID, read and writable by central
 // BLERead | BLENotify remote clients will be able to get notifications if this characteristic changes
-BLEByteCharacteristic isTableRotatingCharacteristic("5ffba524-2363-41da-92f5-46adc56b2d37", BLERead | BLENotify);
+BLEIntCharacteristic isTableRotatingCharacteristic("5ffba524-2363-41da-92f5-46adc56b2d37", BLERead | BLENotify);
 
+// arduino physical configuration
 const int ledPin = LED_BUILTIN; // use built-in LED
 const int motorInterfaceType = 1;
 const int dirPin = 2;
 const int stepPin = 3;
 const int sleepPin = 4;
+
+// rotation constnats
 const int gearRatio = 60;
 const int stepsPerRev = 200;
 const float degPerStep = 360.0/float(stepsPerRev * gearRatio);
@@ -58,13 +61,11 @@ void setup()
   
   // set initial values for the stepper
   stepper.setMaxSpeed(500.0);
-  // stepper.setAcceleration(100.0)
   stepper.setCurrentPosition(0);
 
   // begin BLE initialization
   if (!BLE.begin()) {
     Serial.println("starting BLE failed!");
-
     while (1);
   }
 
@@ -135,8 +136,9 @@ void rotateTable(int degs)
   long steps = degToSteps(degs);
   long nextStepperPosition = stepper.currentPosition() + steps;
   Serial.println((String)"next position at:" + nextStepperPosition);
-
-  Serial.println((String)"table position before: "  + getTablePosition(degs));
+  Serial.println((String)"table position before: " + getCurrentPosition());
+  
+  advanceTablePosition(degs);
 
   // set the stepper to rotate CW 
   if (steps > 0) {
@@ -155,9 +157,8 @@ void rotateTable(int degs)
   }
 
   isTableRotatingCharacteristic.setValue(0);
-  Serial.print((String)"finished rotating the stepper... " + stepper.currentPosition());
 
-  Serial.println((String)"table position after: " + getTablePosition(0));
+  Serial.println((String)"table position after: " + getCurrentPosition());
 }
 
 // convert the BLE input of degrees to # of steps for the stepper to move
@@ -178,11 +179,16 @@ long degToSteps(int degs)
 
 // get the current position of the table away from home (0 deg) in degrees
 // TODO: convert currentPosition to bytes then send to characteristic!!
-long getTablePosition(int degs)
+long advanceTablePosition(int degs)
 {
   tablePosition += degs;
   int currentPosition = tablePosition % 360;
-  Serial.println((String)"this is the current table position" + currentPosition);
   tablePositionCharacteristic.setValue(currentPosition);
   return currentPosition;
+}
+
+// get the current position of the table. from 0->355 deg
+long getCurrentPosition() 
+{
+  return tablePosition % 360;
 }
