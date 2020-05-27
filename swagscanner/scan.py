@@ -12,6 +12,7 @@ from swagscanner.processing.filtering import Filtering
 from swagscanner.processing.registration import Registration
 from swagscanner.scanner.arduino import Arduino
 from swagscanner.scanner.d435 import D435
+from swagscanner.scanner.sr305 import SR305
 from swagscanner.scanner.kinect import Kinect
 import threading
 import time
@@ -22,7 +23,7 @@ class SwagScanner():
 
     '''
 
-    def __init__(self, camera=D435(), fast=True, interval=10):
+    def __init__(self, camera=SR305(), fast=True, interval=10):
         self.file_saver = FileSaver()
         self.arduino = Arduino()
         self.camera = camera
@@ -98,7 +99,7 @@ def main():
 
     '''
 
-    scanner = SwagScanner(fast=True, interval=9)
+    scanner = SwagScanner(camera=SR305(), fast=True, interval=9)
 
     rotations = int(360/scanner.interval)
     for i in range(rotations):
